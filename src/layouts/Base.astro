@@ -270,10 +270,14 @@ const isLoggedIn = !!Astro.locals.user;
 				@supports (color: light-dark(#000, #fff)) {
 					:root.light {
 						color-scheme: light;
+						--lightningcss-light: initial;
+						--lightningcss-dark: ;
 					}
 
 					:root.dark {
 						color-scheme: dark;
+						--lightningcss-light: ;
+						--lightningcss-dark: initial;
 					}
 				}
 
