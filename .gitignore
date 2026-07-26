@@ -10,3 +10,14 @@ data.db
 !.env.example
 .dev.vars
 .dev.vars.*
+
+# Wrangler local cache
+.wrangler/
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
