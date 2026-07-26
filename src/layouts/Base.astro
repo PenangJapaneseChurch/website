@@ -1,11 +1,6 @@
 ---
-import { getMenu, getEmDashCollection, getSiteSettings } from "emdash";
-import {
-	WidgetArea,
-	EmDashHead,
-	EmDashBodyStart,
-	EmDashBodyEnd,
-} from "emdash/ui";
+import { getSiteSettings } from "emdash";
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import LiveSearch from "emdash/ui/search";
 import { Font } from "astro:assets";
@@ -45,17 +40,6 @@ const { siteTitle, siteTagline, siteLogo } = resolveBlogSiteIdentity(await getSi
 // If title already includes site title (from getSeoMeta), use as-is
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 
-// Fetch primary menu defined in seed
-const menu = await getMenu("primary");
-
-// Optional "social" menu. If a site defines a `social` menu in its seed,
-// it'll render in the footer's "Connect" column. Otherwise that column
-// just shows RSS, avoiding duplication with the "Navigate" column above.
-const socialMenu = await getMenu("social");
-
-// Fetch pages for footer
-const { entries: pages } = await getEmDashCollection("pages");
-
 // Build public page context for plugin contributions
 // SEO data is passed here and rendered securely by EmDashHead
 const pageCtx = createPublicPageContext({
@@ -78,7 +62,7 @@ const isLoggedIn = !!Astro.locals.user;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -116,17 +100,16 @@ const isLoggedIn = !!Astro.locals.user;
 						inputClass="site-search-input"
 						resultsClass="site-search-results"
 						resultClass="site-search-result"
-						collections={["posts", "pages"]}
-					/>
-					<div class="nav-links">
-						{
-							menu?.items.map((item) => (
-								<a href={item.url} target={item.target}>
-									{item.label}
-								</a>
-							))
-						}
-					</div>
+						collections={["news", "sermons", "events", "posts", "pages"]}
+						/>
+						<div class="nav-links">
+						<a href="/">Home</a>
+						<a href="/about">教会について</a>
+						<a href="/news">お知らせ</a>
+						<a href="/sermons">説教</a>
+						<a href="/events">イベント</a>
+						<a href="/contact">お問い合わせ</a>
+						</div>
 				</div>
 				{
 					isLoggedIn && (
@@ -143,142 +126,51 @@ const isLoggedIn = !!Astro.locals.user;
 		</main>
 
 		<footer class="site-footer">
-			<div class="footer-inner">
-				<div class="footer-grid">
-					<div class="footer-brand">
-						<a href="/" class="footer-logo">
-							{siteLogo
-								? <img src={siteLogo.url} alt={siteLogo.alt || siteTitle} class="footer-logo-img" />
-								: siteTitle
-							}
-						</a>
-						<p class="footer-tagline">{siteTagline}</p>
+				<div class="footer-inner">
+					<div class="footer-grid">
+						<div class="footer-brand">
+							<a href="/" class="footer-logo">
+					{siteTitle}
+							</a>
+							<p class="footer-tagline">{siteTagline}</p>
+						</div>
+						<div class="footer-nav">
+							<h4 class="footer-heading">メニュー</h4>
+							<ul class="footer-links">
+					<li><a href="/">Home</a></li>
+					<li><a href="/about">教会について</a></li>
+					<li><a href="/news">お知らせ</a></li>
+					<li><a href="/sermons">説教</a></li>
+					<li><a href="/events">イベント</a></li>
+					<li><a href="/contact">お問い合わせ</a></li>
+							</ul>
+						</div>
+						<div class="footer-nav">
+							<h4 class="footer-heading">Connect</h4>
+							<ul class="footer-links">
+					<li><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+					<li><a href="/rss.xml">RSS Feed</a></li>
+							</ul>
+						</div>
 					</div>
-					<div class="footer-nav">
-						<h4 class="footer-heading">Navigate</h4>
-						<ul class="footer-links">
-							<li><a href="/">Home</a></li>
-							<li><a href="/posts">All Posts</a></li>
-							{
-								pages.slice(0, 3).map((page) => (
-									<li>
-										<a href={`/pages/${page.data.slug || page.id}`}>
-											{page.data.title}
-										</a>
-									</li>
-								))
-							}
-						</ul>
-					</div>
-					<div class="footer-nav">
-						<h4 class="footer-heading">Connect</h4>
-						<ul class="footer-links">
-							{
-								socialMenu?.items.map((item) => (
-									<li>
-										<a
-											href={item.url}
-											target={item.target}
-											rel={
-												item.target === "_blank"
-													? "noopener noreferrer"
-													: undefined
-											}
-										>
-											{item.label}
-										</a>
-									</li>
-								))
-							}
-							<li><a href="/rss.xml">RSS Feed</a></li>
-						</ul>
-					</div>
-					<div class="footer-widgets-section">
-						<WidgetArea name="footer" />
+					<div class="footer-bottom">
+						<p class="footer-copyright">
+							&copy; {new Date().getFullYear()} Penang Japanese Church.
+						</p>
+						<div class="theme-switcher">
+							<button type="button" class="theme-btn" data-theme="light" aria-label="Light mode">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+							</button>
+							<button type="button" class="theme-btn" data-theme="dark" aria-label="Dark mode">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+							</button>
+							<button type="button" class="theme-btn" data-theme="system" aria-label="System theme">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+							</button>
+						</div>
 					</div>
 				</div>
-				<div class="footer-bottom">
-					<p class="footer-copyright">
-						Powered by <a href="https://emdashcms.com">EmDash</a>
-					</p>
-					<div class="theme-switcher">
-						<button
-							type="button"
-							class="theme-btn"
-							data-theme="light"
-							aria-label="Light mode"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="12" cy="12" r="5"></circle><line
-									x1="12"
-									y1="1"
-									x2="12"
-									y2="3"></line><line x1="12" y1="21" x2="12" y2="23"
-								></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"
-								></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"
-								></line><line x1="1" y1="12" x2="3" y2="12"></line><line
-									x1="21"
-									y1="12"
-									x2="23"
-									y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"
-								></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"
-								></line></svg
-							>
-						</button>
-						<button
-							type="button"
-							class="theme-btn"
-							data-theme="dark"
-							aria-label="Dark mode"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-								></path></svg
-							>
-						</button>
-						<button
-							type="button"
-							class="theme-btn"
-							data-theme="system"
-							aria-label="System theme"
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><rect x="2" y="3" width="20" height="14" rx="2" ry="2"
-								></rect><line x1="8" y1="21" x2="16" y2="21"></line><line
-									x1="12"
-									y1="17"
-									x2="12"
-									y2="21"></line></svg
-							>
-						</button>
-					</div>
-				</div>
-			</div>
-		</footer>
+			</footer>
 
 		<script>
 			// Theme switcher
@@ -639,9 +531,17 @@ const isLoggedIn = !!Astro.locals.user;
 
 			.footer-grid {
 				display: grid;
-				grid-template-columns: 2fr 1fr 1fr 1fr;
+				grid-template-columns: 2fr 1fr 1fr;
 				gap: var(--spacing-12);
 				margin-bottom: var(--spacing-12);
+			}
+
+			.footer-nav {
+				justify-self: end;
+			}
+
+			.footer-nav:last-of-type {
+				justify-self: center;
 			}
 
 			.footer-brand {
@@ -725,15 +625,16 @@ const isLoggedIn = !!Astro.locals.user;
 
 			.footer-bottom {
 				display: flex;
-				justify-content: space-between;
 				align-items: center;
 				padding-top: var(--spacing-6);
 				border-top: 1px solid var(--color-border);
 			}
 
 			.footer-copyright {
+				flex: 1;
 				font-size: var(--font-size-sm);
 				color: var(--color-muted);
+				text-align: center;
 			}
 
 			.footer-copyright a {
