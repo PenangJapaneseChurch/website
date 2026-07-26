@@ -172,27 +172,23 @@ const isLoggedIn = !!Astro.locals.user;
 				</div>
 			</footer>
 
-		<script>
+		<script is:inline>
 			// Theme switcher
 			const THEME_REGEX = /theme=([^;]+)/;
-			const themeBtns =
-				document.querySelectorAll<HTMLButtonElement>(".theme-btn");
+			const themeBtns = document.querySelectorAll(".theme-btn");
 			const root = document.documentElement;
 
-			function setCookie(
-				name: string,
-				value: string,
-				maxAge: number = 31536000
-			) {
+			function setCookie(name, value, maxAge) {
+				if (!maxAge) maxAge = 31536000;
 				const secure = location.protocol === "https:" ? "; Secure" : "";
 				if (value === "") {
-					document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax${secure}`;
+					document.cookie = name + "=; path=/; max-age=0; SameSite=Lax" + secure;
 				} else {
-					document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax${secure}`;
+					document.cookie = name + "=" + value + "; path=/; max-age=" + maxAge + "; SameSite=Lax" + secure;
 				}
 			}
 
-			function setTheme(theme: string) {
+			function setTheme(theme) {
 				if (theme === "system") {
 					setCookie("theme", "");
 					root.classList.remove("light", "dark");
@@ -204,13 +200,13 @@ const isLoggedIn = !!Astro.locals.user;
 				updateActiveBtn(theme);
 			}
 
-			function updateActiveBtn(theme: string) {
-				themeBtns.forEach((btn) => {
+			function updateActiveBtn(theme) {
+				themeBtns.forEach(function(btn) {
 					btn.classList.toggle("active", btn.dataset.theme === theme);
 				});
 			}
 
-			function getStoredTheme(): string {
+			function getStoredTheme() {
 				const match = document.cookie.match(THEME_REGEX);
 				return match ? match[1] : "system";
 			}
@@ -219,8 +215,8 @@ const isLoggedIn = !!Astro.locals.user;
 			const storedTheme = getStoredTheme();
 			setTheme(storedTheme);
 
-			themeBtns.forEach((btn) => {
-				btn.addEventListener("click", () => {
+			themeBtns.forEach(function(btn) {
+				btn.addEventListener("click", function() {
 					setTheme(btn.dataset.theme || "system");
 				});
 			});
