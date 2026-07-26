@@ -82,6 +82,9 @@ const isLoggedIn = !!Astro.locals.user;
 				}
 			})();
 		</script>
+		<style is:inline>
+			:root { color-scheme: light dark; }
+		</style>
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
