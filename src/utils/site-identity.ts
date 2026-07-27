@@ -12,7 +12,7 @@ export interface BlogSiteIdentitySettings {
 	favicon?: MediaReference;
 }
 
-const DEFAULT_SITE_TITLE = "ペナン日本人教会 | Penang Japanese Church";
+const DEFAULT_SITE_TITLE = "ペナン日本人教会 ✝ Penang Japanese Church";
 const DEFAULT_SITE_TAGLINE = "マレーシア・ペナンにあるプロテスタント日本人教会 | A Japanese Protestant Church in Penang, Malaysia";
 
 export function resolveBlogSiteIdentity(settings?: BlogSiteIdentitySettings) {

@@ -1,0 +1,170 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../layouts/Base.astro";
+
+const { entries: staff } = await getEmDashCollection("staff", {
+	orderBy: { sort_order: "asc" },
+});
+---
+
+<Base title="教会について — ペナン日本人教会" description="ペナン日本人教会の紹介、信仰告白、スタッフ紹介。">
+	<section class="page-section">
+		<div class="section-inner">
+			<h1 class="page-title">教会について</h1>
+
+			<!-- Church History & Vision -->
+			<div class="content-block">
+				<h2>ペナン日本人教会について</h2>
+				<p>
+					ペナン日本人教会（Penang Japanese Church）は、マレーシア・ペナン島にあるプロテスタント教会です。
+					日本語での礼拝を守り、ペナンにお住まいの日本人、そしてペナンを訪れる方々に
+					開かれた教会を目指しています。
+				</p>
+				<p>
+					毎週日曜日の礼拝では、聖書のメッセージに耳を傾け、賛美を捧げ、
+					祈りの時を持っています。礼拝後には交わりの時間も設けています。
+				</p>
+			</div>
+
+			<!-- Statement of Faith -->
+			<div class="content-block">
+				<h2>使徒信条</h2>
+				<p>
+					私は天地の造り主、全能の父なる神を信じます。
+				</p>
+				<p>
+					私はその独り子、私たちの主、イエス・キリストを信じます。<br/>
+					主は聖霊によりてやどり、おとめマリヤより生まれ、
+					ポンテオ・ピラトのもとに苦しみを受け、十字架につけられ、
+					死んで葬られ、よみにくだり、三日目に死人の内よみがえり、
+					天にのぼられました。<br/>
+					そして全能の父なる神の右に座しておられます。<br/>
+					そこから来られて、生きている者と死んでいる者を審かれます。
+				</p>
+				<p>
+					私は聖霊を信じ、聖なる公同の教会、聖徒の交わり、
+					罪のゆるし、からだのよみがえり、永遠の命を信じます。
+				</p>
+				<p class="amen">アーメン</p>
+			</div>
+
+			<!-- Staff -->
+			{staff.length > 0 && (
+				<div class="content-block">
+					<h2>スタッフ・役員</h2>
+					<div class="staff-grid">
+						{staff.map((person) => (
+							<div class="staff-card">
+								{person.data.photo && (
+									<div class="staff-photo">
+										<img src={person.data.photo} alt={person.data.name} />
+									</div>
+								)}
+								<div class="staff-info">
+									<h3 class="staff-name">{person.data.name}</h3>
+									<p class="staff-role">{person.data.role}</p>
+									{person.data.bio && (
+										<p class="staff-bio">{person.data.bio}</p>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			)}
+		</div>
+	</section>
+</Base>
+
+<style>
+	.section-inner {
+		max-width: var(--content-width);
+		margin: 0 auto;
+		padding: var(--spacing-16) var(--spacing-6);
+	}
+
+	.page-title {
+		font-size: var(--font-size-4xl);
+		font-weight: var(--font-weight-display);
+		text-align: center;
+		margin-bottom: var(--spacing-12);
+	}
+
+	.content-block {
+		margin-bottom: var(--spacing-12);
+	}
+
+	.content-block h2 {
+		font-size: var(--font-size-xl);
+		font-weight: var(--font-weight-heading);
+		margin-bottom: var(--spacing-4);
+		padding-bottom: var(--spacing-3);
+		border-bottom: 1px solid var(--color-border-subtle);
+	}
+
+	.content-block p {
+		font-size: var(--font-size-base);
+		line-height: var(--leading-relaxed);
+		color: var(--color-text-secondary);
+		margin-bottom: var(--spacing-4);
+	}
+
+	/* Staff Grid */
+	.staff-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--spacing-8);
+	}
+
+	.staff-card {
+		display: flex;
+		gap: var(--spacing-6);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border-subtle);
+		border-radius: var(--radius-lg);
+		padding: var(--spacing-6);
+	}
+
+	.staff-photo {
+		flex-shrink: 0;
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		overflow: hidden;
+		background: var(--color-border-subtle);
+	}
+	.staff-photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.staff-info { flex: 1; }
+
+	.staff-name {
+		font-size: var(--font-size-base);
+		font-weight: 600;
+	}
+
+	.staff-role {
+		font-size: var(--font-size-sm);
+		color: var(--color-brand);
+		margin-bottom: var(--spacing-2);
+	}
+
+	.staff-bio {
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+		line-height: var(--leading-relaxed);
+	}
+
+	.amen {
+		text-align: right;
+		font-weight: 600;
+	}
+
+	@media (max-width: 600px) {
+		.staff-grid { grid-template-columns: 1fr; }
+		.staff-card { flex-direction: column; align-items: center; text-align: center; }
+	}
+</style>

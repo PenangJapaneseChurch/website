@@ -1,0 +1,91 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+
+const { entries: allEvents } = await getEmDashCollection("events", {
+	orderBy: { date: "asc" },
+});
+---
+
+<Base title="イベント — ペナン日本人教会" description="ペナン日本人教会のイベント一覧。">
+	<section class="page-section">
+		<div class="section-inner">
+			<h1 class="page-title">イベント</h1>
+
+			{allEvents.length === 0 ? (
+				<p class="empty">現在予定されているイベントはありません。</p>
+			) : (
+				<div class="events-list">
+					{allEvents.map((item) => (
+						<article class="event-card">
+							<time class="event-date">
+								{new Date(item.data.date).toLocaleDateString("ja-JP", {
+									year: "numeric", month: "long", day: "numeric"
+								})}
+								{item.data.end_date && (
+									<> 〜 {new Date(item.data.end_date).toLocaleDateString("ja-JP", {
+										year: "numeric", month: "long", day: "numeric"
+									})}</>
+								)}
+							</time>
+							<h2 class="event-title">
+								<a href={`/events/${item.data.slug || item.id}`}>
+									{item.data.title}
+								</a>
+							</h2>
+							{item.data.location && (
+								<p class="event-location">{item.data.location}</p>
+							)}
+						</article>
+					))}
+				</div>
+			)}
+		</div>
+	</section>
+</Base>
+
+<style>
+	.section-inner {
+		max-width: var(--content-width);
+		margin: 0 auto;
+		padding: var(--spacing-16) var(--spacing-6);
+	}
+	.page-title {
+		font-size: var(--font-size-4xl);
+		font-weight: var(--font-weight-display);
+		text-align: center;
+		margin-bottom: var(--spacing-12);
+	}
+	.events-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-6);
+	}
+	.event-card {
+		padding-bottom: var(--spacing-6);
+		border-bottom: 1px solid var(--color-border-subtle);
+	}
+	.event-date {
+		font-size: var(--font-size-xs);
+		color: var(--color-brand);
+		font-weight: 500;
+	}
+	.event-title {
+		font-size: var(--font-size-xl);
+		margin-top: var(--spacing-2);
+	}
+	.event-title a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+	.event-title a:hover { color: var(--color-brand); }
+	.event-location {
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+		margin-top: var(--spacing-1);
+	}
+	.empty {
+		text-align: center;
+		color: var(--color-muted);
+	}
+</style>

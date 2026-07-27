@@ -1,0 +1,89 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+
+const { entries: allNews } = await getEmDashCollection("news", {
+	orderBy: { date: "desc" },
+});
+---
+
+<Base title="お知らせ — ペナン日本人教会" description="ペナン日本人教会のお知らせ一覧。">
+	<section class="page-section">
+		<div class="section-inner">
+			<h1 class="page-title">お知らせ</h1>
+
+			{allNews.length === 0 ? (
+				<p class="empty">お知らせはまだありません。</p>
+			) : (
+				<div class="news-list">
+					{allNews.map((item) => (
+						<article class="news-card">
+							<time class="news-date">
+								{new Date(item.data.date).toLocaleDateString("ja-JP", {
+									year: "numeric", month: "long", day: "numeric"
+								})}
+							</time>
+							{item.data.category && (
+								<span class="news-category">{item.data.category}</span>
+							)}
+							<h2 class="news-title">
+								<a href={`/news/${item.data.slug || item.id}`}>
+									{item.data.title}
+								</a>
+							</h2>
+						</article>
+					))}
+				</div>
+			)}
+		</div>
+	</section>
+</Base>
+
+<style>
+	.section-inner {
+		max-width: var(--content-width);
+		margin: 0 auto;
+		padding: var(--spacing-16) var(--spacing-6);
+	}
+	.page-title {
+		font-size: var(--font-size-4xl);
+		font-weight: var(--font-weight-display);
+		text-align: center;
+		margin-bottom: var(--spacing-12);
+	}
+	.news-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-6);
+	}
+	.news-card {
+		padding-bottom: var(--spacing-6);
+		border-bottom: 1px solid var(--color-border-subtle);
+	}
+	.news-date {
+		font-size: var(--font-size-xs);
+		color: var(--color-muted);
+	}
+	.news-category {
+		display: inline-block;
+		font-size: var(--font-size-xs);
+		color: var(--color-brand);
+		background: var(--color-surface);
+		padding: 2px var(--spacing-2);
+		border-radius: var(--radius);
+		margin-left: var(--spacing-3);
+	}
+	.news-title {
+		font-size: var(--font-size-xl);
+		margin-top: var(--spacing-2);
+	}
+	.news-title a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+	.news-title a:hover { color: var(--color-brand); }
+	.empty {
+		text-align: center;
+		color: var(--color-muted);
+	}
+</style>

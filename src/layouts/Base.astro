@@ -37,8 +37,18 @@ const {
 	content,
 } = Astro.props;
 const { siteTitle, siteTagline, siteLogo } = resolveBlogSiteIdentity(await getSiteSettings());
-// If title already includes site title (from getSeoMeta), use as-is
-const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
+// For browser tab title, use — instead of ✝ to avoid duplicate cross with favicon
+const siteTitleJa = siteTitle.includes("✝") ? siteTitle.split("✝")[0].trim() : siteTitle;
+const siteTitleEn = siteTitle.includes("✝") ? siteTitle.split("✝")[1].trim() : "";
+const siteTitleForTab = `${siteTitleJa} — ${siteTitleEn}`;
+// Strip ✝ from page title, then append site title if needed
+const cleanTitle = title.replace("✝", "—");
+const hasEnglish = cleanTitle.includes(siteTitleEn);
+const fullTitle = cleanTitle.includes(siteTitleJa)
+	? (hasEnglish ? cleanTitle : `${cleanTitle} — ${siteTitleEn}`)
+	: `${cleanTitle} — ${siteTitleForTab}`;
+const siteTaglineJa = siteTagline.includes("|") ? siteTagline.split("|")[0].trim() : siteTagline;
+const siteTaglineEn = siteTagline.includes("|") ? siteTagline.split("|")[1].trim() : "";
 
 // Build public page context for plugin contributions
 // SEO data is passed here and rendered securely by EmDashHead
@@ -66,6 +76,7 @@ const isLoggedIn = !!Astro.locals.user;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
 		<title>{fullTitle}</title>
@@ -94,30 +105,24 @@ const isLoggedIn = !!Astro.locals.user;
 					}
 				</a>
 				<div class="nav-right">
-					<LiveSearch
-						placeholder="Search..."
-						class="site-search"
-						inputClass="site-search-input"
-						resultsClass="site-search-results"
-						resultClass="site-search-result"
-						collections={["news", "sermons", "events", "posts", "pages"]}
-						/>
+					<!-- Search temporarily disabled -->
+										{/* <LiveSearch
+											placeholder="Search..."
+											class="site-search"
+											inputClass="site-search-input"
+											resultsClass="site-search-results"
+											resultClass="site-search-result"
+											collections={["news", "sermons", "events", "posts", "pages"]}
+											/> */}
 						<div class="nav-links">
-						<a href="/">Home</a>
+						<a href="/">ホーム</a>
 						<a href="/about">教会について</a>
 						<a href="/news">お知らせ</a>
-						<a href="/sermons">説教</a>
+						<a href="/sermons">礼拝</a>
 						<a href="/events">イベント</a>
 						<a href="/contact">お問い合わせ</a>
 						</div>
 				</div>
-				{
-					isLoggedIn && (
-						<a href="/_emdash/admin" class="nav-admin">
-							Admin
-						</a>
-					)
-				}
 			</nav>
 		</header>
 
@@ -130,26 +135,32 @@ const isLoggedIn = !!Astro.locals.user;
 					<div class="footer-grid">
 						<div class="footer-brand">
 							<a href="/" class="footer-logo">
-					{siteTitle}
+								{/* ✝ before each line */}
+								✝ {siteTitleJa}<br/>✝ {siteTitleEn}
 							</a>
-							<p class="footer-tagline">{siteTagline}</p>
+							<p class="footer-tagline">{siteTaglineJa}<br/>{siteTaglineEn}</p>
 						</div>
 						<div class="footer-nav">
 							<h4 class="footer-heading">メニュー</h4>
 							<ul class="footer-links">
-					<li><a href="/">Home</a></li>
+					<li><a href="/">ホーム</a></li>
 					<li><a href="/about">教会について</a></li>
 					<li><a href="/news">お知らせ</a></li>
-					<li><a href="/sermons">説教</a></li>
+					<li><a href="/sermons">礼拝</a></li>
 					<li><a href="/events">イベント</a></li>
-					<li><a href="/contact">お問い合わせ</a></li>
 							</ul>
 						</div>
 						<div class="footer-nav">
-							<h4 class="footer-heading">Connect</h4>
+							<h4 class="footer-heading">リンク</h4>
 							<ul class="footer-links">
-					<li><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+					<li><a href="/contact">お問い合わせ</a></li>
+					<li><a href="https://www.facebook.com/groups/412402279749999/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
 					<li><a href="/rss.xml">RSS Feed</a></li>
+					{
+						isLoggedIn && (
+							<li><a href="/_emdash/admin">Admin</a></li>
+						)
+					}
 							</ul>
 						</div>
 					</div>
@@ -545,7 +556,7 @@ const isLoggedIn = !!Astro.locals.user;
 			}
 
 			.footer-brand {
-				max-width: 280px;
+				max-width: 400px;
 			}
 
 			.footer-logo {
@@ -566,6 +577,7 @@ const isLoggedIn = !!Astro.locals.user;
 				font-size: var(--font-size-sm);
 				color: var(--color-muted);
 				line-height: var(--leading-relaxed);
+				white-space: nowrap;
 			}
 
 			.footer-nav {

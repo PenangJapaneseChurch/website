@@ -1,0 +1,94 @@
+---
+import { getEmDashEntry, getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+	const { entries } = await getEmDashCollection("news");
+	return entries.map((entry) => ({
+		params: { slug: entry.data.slug || entry.id },
+	}));
+}
+
+const { slug } = Astro.params;
+const { entry } = await getEmDashEntry("news", slug);
+if (!entry) return Astro.redirect("/news");
+---
+
+<Base title={`${entry.data.title} — ペナン日本人教会`} description={entry.data.title}>
+	<article class="page-section">
+		<div class="section-inner">
+			<header class="article-header">
+				<h1 class="article-title">{entry.data.title}</h1>
+				<div class="article-meta">
+					{entry.data.date && (
+						<time>
+							{new Date(entry.data.date).toLocaleDateString("ja-JP", {
+								year: "numeric", month: "long", day: "numeric"
+							})}
+						</time>
+					)}
+					{entry.data.category && (
+						<span class="article-category">{entry.data.category}</span>
+					)}
+				</div>
+			</header>
+			<div class="article-body">
+				{entry.data.body?.map((block: any) => {
+					if (block.type === "paragraph") {
+						return <p>{block.children?.map((c: any) => c.text).join("")}</p>;
+					}
+					return null;
+				})}
+			</div>
+			<footer class="article-footer">
+				<a href="/news" class="back-link">← お知らせ一覧に戻る</a>
+			</footer>
+		</div>
+	</article>
+</Base>
+
+<style>
+	.section-inner {
+		max-width: var(--content-width);
+		margin: 0 auto;
+		padding: var(--spacing-16) var(--spacing-6);
+	}
+	.article-header {
+		margin-bottom: var(--spacing-10);
+	}
+	.article-title {
+		font-size: var(--font-size-3xl);
+		font-weight: var(--font-weight-display);
+	}
+	.article-meta {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-3);
+		margin-top: var(--spacing-3);
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+	}
+	.article-category {
+		color: var(--color-brand);
+		background: var(--color-surface);
+		padding: 2px var(--spacing-2);
+		border-radius: var(--radius);
+		font-size: var(--font-size-xs);
+	}
+	.article-body p {
+		font-size: var(--font-size-lg);
+		line-height: var(--leading-relaxed);
+		margin-bottom: var(--spacing-6);
+	}
+	.article-footer {
+		margin-top: var(--spacing-12);
+		padding-top: var(--spacing-6);
+		border-top: 1px solid var(--color-border-subtle);
+	}
+	.back-link {
+		color: var(--color-brand);
+		text-decoration: none;
+		font-size: var(--font-size-sm);
+	}
+	.back-link:hover { color: var(--color-brand-hover); }
+</style>
