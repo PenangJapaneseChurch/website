@@ -93,6 +93,30 @@ const isLoggedIn = !!Astro.locals.user;
 				}
 			})();
 		</script>
+		<script type="application/ld+json" is:inline>
+			{
+				"@context": "https://schema.org",
+				"@type": "Church",
+				"name": "ペナン日本人教会 | Penang Japanese Church",
+				"description": "マレーシア・ペナン島にあるプロテスタント日本人教会。毎週日曜日午前10時30分より日本語での礼拝を行っています。",
+				"url": "https://penang.japanesechurch.workers.dev",
+				"address": {
+					"@type": "PostalAddress",
+					"addressLocality": "Tanjung Bungah",
+					"addressRegion": "Penang",
+					"addressCountry": "MY"
+				},
+				"geo": {
+					"@type": "GeoCoordinates",
+					"latitude": "5.46",
+					"longitude": "100.30"
+				},
+				"sameAs": [
+					"https://www.facebook.com/groups/412402279749999/"
+				],
+				"openingHours": "Su 10:30-12:00"
+			}
+		</script>
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
@@ -168,11 +192,7 @@ const isLoggedIn = !!Astro.locals.user;
 					<li><a href="/contact">お問い合わせ</a></li>
 					<li><a href="https://www.facebook.com/groups/412402279749999/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
 					<li><a href="/rss.xml">RSS Feed</a></li>
-					{
-						isLoggedIn && (
-							<li><a href="/_emdash/admin">Admin</a></li>
-						)
-					}
+					<li><a href="/_emdash/admin">Admin</a></li>
 							</ul>
 						</div>
 					</div>
