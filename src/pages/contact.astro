@@ -36,7 +36,8 @@ import Base from "../layouts/Base.astro";
 
 			<div class="content-block">
 				<h2>アクセス</h2>
-				<p>ペナン島タンジュン・ブンガ（詳細はお問い合わせください）</p>
+				<p class="desktop-only">ペナン島タンジュン・ブンガ（詳細はお問い合わせください）</p>
+				<p class="mobile-only">ペナン島タンジュン・ブンガ<br/>（詳細はお問い合わせください）</p>
 				<div class="map-wrapper">
 					<iframe
 						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d44934.6323429398!2d100.2789542751802!3d5.462728919650557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304ae81ecd8b86b5%3A0xb25d21e469e4c2e9!2zVGFuanVuZyBCdW5nYWgsIOODmuODiuODsw!5e0!3m2!1sja!2smy!4v1785069607098!5m2!1sja!2smy"
@@ -102,8 +103,12 @@ import Base from "../layouts/Base.astro";
 		overflow: hidden;
 		margin-top: var(--spacing-4);
 	}
+	.content-block p {
+		text-align: center;
+	}
 	.sns-links {
 		display: flex;
+		justify-content: center;
 		gap: var(--spacing-4);
 	}
 	.sns-link {
