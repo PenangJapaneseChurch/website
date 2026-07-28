@@ -101,7 +101,7 @@ const isLoggedIn = !!Astro.locals.user;
 				<a href="/" class="site-title">
 					{siteLogo
 						? <img src={siteLogo.url} alt={siteLogo.alt || siteTitle} class="site-logo-img" />
-						: siteTitle
+						: <><span class="desktop-title">{siteTitle}</span><span class="mobile-title">ペナン日本人教会 ✝ PJC</span></>
 					}
 				</a>
 				<div class="nav-right">
@@ -148,7 +148,7 @@ const isLoggedIn = !!Astro.locals.user;
 						<div class="footer-brand">
 							<a href="/" class="footer-logo">
 								{/* ✝ before each line */}
-								✝ {siteTitleJa}<br/>✝ {siteTitleEn}
+								{siteTitleJa} ✝<br/>{siteTitleEn}
 							</a>
 							<p class="footer-tagline">{siteTaglineJa}<br/>{siteTaglineEn}</p>
 						</div>
@@ -813,7 +813,10 @@ const isLoggedIn = !!Astro.locals.user;
 			.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
 			.mobile-only { display: none; }
+			.mobile-title { display: none; }
 			@media (max-width: 768px) {
+				.desktop-title { display: none; }
+				.mobile-title { display: inline; }
 				.hamburger { display: flex; }
 				.nav-links {
 					display: none;
